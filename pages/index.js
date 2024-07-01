@@ -72,7 +72,7 @@ export default function Index(props) {
         {sortedWorksContent.map((work, index) => (
           <li key={work.id || work._sys?.filename || work.slug || index}>
             <Link
-              href={`/works/${
+              href={`/${
                 work.slug || work._sys?.filename?.replace(/\.mdx$/, "") || "#"
               }`}
             >
