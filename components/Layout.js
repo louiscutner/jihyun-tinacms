@@ -14,16 +14,16 @@ export const Layout = (props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <header>
-        <Link href="/exhibitions">
-          <a className="bg-green-500 m-3 p-3">Exhibitions</a>
-        </Link>
-        {" | "}
         <Link href="/">
-          <a className="bg-pink-500 m-3 p-3">Works</a>
+          <a className="bg-pink-500 m-3 p-3">Home</a>
         </Link>
         {" | "}
         <Link href="/about">
           <a className="bg-orange-500 m-3 p-3">About</a>
+        </Link>
+        {" | "}
+        <Link href="/exhibitions">
+          <a className="bg-green-500 m-3 p-3">Exhibitions</a>
         </Link>
       </header>
       <main className="text-blue-500 pt-10">{props.children}</main>
