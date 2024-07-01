@@ -2,7 +2,6 @@ import { defineConfig } from "tinacms";
 import exhibitions from "./collections/exhibitions";
 import about from "./collections/about";
 import work from "./collections/work";
-// import index from "./collections/index"; // Import the index collection for works overview
 import home from "./collections/home";
 
 export const config = defineConfig({

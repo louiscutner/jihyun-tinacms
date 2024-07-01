@@ -28,6 +28,9 @@ const CustomWorkList = wrapFieldsWithMeta(({ input, field }) => {
     [works, input]
   );
 
+  console.log("Works (from admin):", works);
+  console.log("Input value:", input.value);
+
   return (
     <div className="mb-4">
       <label>{field.label}</label>
