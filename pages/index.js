@@ -5,6 +5,9 @@ import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
 
 export default function Index(props) {
   const { data } = useTina({
@@ -17,9 +20,9 @@ export default function Index(props) {
   const [worksContent, setWorksContent] = useState([]);
 
   useEffect(() => {
-    if (data.home && data.home.worksList) {
+    if (isAdminMode && data.home && data.home.worksList) {
       const updatedTitles = data.home.worksList.map((work) => work.title);
-      console.log("Updated work titles:", updatedTitles);
+      console.log("Updated work titles (admin mode):", updatedTitles);
 
       if (worksContent.length === 0) {
         // Initial setup of works content
@@ -34,8 +37,15 @@ export default function Index(props) {
         });
         setWorksContent(updatedWorks);
       }
+    } else if (!isAdminMode) {
+      // Use the works from props (fetched from the works folder)
+      setWorksContent(props.works);
+      console.log(
+        "Updated work titles (live mode):",
+        props.works.map((work) => work.title)
+      );
     }
-  }, [data, isAdminMode]);
+  }, [data, isAdminMode, props.works]);
 
   const sortedWorksContent = [...worksContent].sort(
     (a, b) => a.order - b.order
@@ -60,9 +70,11 @@ export default function Index(props) {
       <h1>Works</h1>
       <ul>
         {sortedWorksContent.map((work, index) => (
-          <li key={work.id || work._sys?.filename || index}>
+          <li key={work.id || work._sys?.filename || work.slug || index}>
             <Link
-              href={`/${work._sys?.filename?.replace(/\.mdx$/, "") || "#"}`}
+              href={`/works/${
+                work.slug || work._sys?.filename?.replace(/\.mdx$/, "") || "#"
+              }`}
             >
               <a>{work.title}</a>
             </Link>
@@ -85,7 +97,24 @@ export const getStaticProps = async (context) => {
   });
 
   let workConnectionData = {};
+  let works = [];
+
   if (!isAdminMode) {
+    const worksDirectory = path.join(process.cwd(), "content/works");
+    const filenames = fs.readdirSync(worksDirectory);
+
+    works = filenames.map((filename) => {
+      const filePath = path.join(worksDirectory, filename);
+      const fileContents = fs.readFileSync(filePath, "utf8");
+      const { data } = matter(fileContents);
+
+      return {
+        slug: filename.replace(".mdx", ""),
+        title: data.title,
+        order: data.order || 0,
+      };
+    });
+  } else {
     const worksListData = await client.request({
       query: `
         query WorksConnection {
@@ -116,6 +145,7 @@ export const getStaticProps = async (context) => {
       query,
       variables,
       isAdminMode,
+      works,
     },
   };
 };

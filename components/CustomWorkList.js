@@ -1,13 +1,50 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { wrapFieldsWithMeta } from "tinacms";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { client } from "../tina/__generated__/client";
 
 const CustomWorkList = wrapFieldsWithMeta(({ input, field }) => {
   const [works, setWorks] = useState(input.value || []);
 
   useEffect(() => {
-    setWorks(input.value || []);
-  }, [input.value]);
+    const fetchWorks = async () => {
+      try {
+        const worksListData = await client.request({
+          query: `
+            query GetWorks {
+              workConnection {
+                edges {
+                  node {
+                    _sys {
+                      filename
+                    }
+                    title
+                    order
+                  }
+                }
+              }
+            }
+          `,
+        });
+
+        const fetchedWorks = worksListData.data.workConnection.edges.map(
+          (edge) => ({
+            title: edge.node.title,
+            order: edge.node.order || 0,
+            filename: edge.node._sys.filename,
+          })
+        );
+        const sortedWorks = fetchedWorks.sort((a, b) => a.order - b.order);
+
+        setWorks(sortedWorks);
+        input.onChange(sortedWorks);
+      } catch (error) {
+        console.error("Error fetching works:", error);
+      }
+    };
+
+    fetchWorks();
+  }, []);
 
   const onDragEnd = useCallback(
     (result) => {
@@ -28,8 +65,7 @@ const CustomWorkList = wrapFieldsWithMeta(({ input, field }) => {
     [works, input]
   );
 
-  console.log("Works (from admin):", works);
-  console.log("Input value:", input.value);
+  console.log("Works:", works);
 
   return (
     <div className="mb-4">
@@ -45,8 +81,8 @@ const CustomWorkList = wrapFieldsWithMeta(({ input, field }) => {
             >
               {works.map((work, index) => (
                 <Draggable
-                  key={work.id || `work-${index}`}
-                  draggableId={work.id || `work-${index}`}
+                  key={work.filename}
+                  draggableId={work.filename}
                   index={index}
                 >
                   {(provided, snapshot) => (
