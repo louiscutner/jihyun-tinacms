@@ -1,41 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { useCMS } from "tinacms";
+import React, { useCallback, useState, useEffect } from "react";
 import { wrapFieldsWithMeta } from "tinacms";
-import { client } from "../tina/__generated__/client"; // Adjust the path as necessary
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-const CustomWorkList = wrapFieldsWithMeta(({ input, field, meta }) => {
-  const cms = useCMS();
-  const [works, setWorks] = useState([]);
+const CustomWorkList = wrapFieldsWithMeta(({ input, field }) => {
+  const [works, setWorks] = useState(input.value || []);
 
   useEffect(() => {
-    const fetchWorks = async () => {
-      try {
-        const response = await client.queries.workConnection();
-        const works = response.data.workConnection.edges.map(
-          (edge) => edge.node
-        );
-        setWorks(works);
-      } catch (error) {
-        console.error("Error fetching works:", error);
-      }
-    };
+    setWorks(input.value || []);
+  }, [input.value]);
 
-    fetchWorks();
-  }, [cms]);
+  const onDragEnd = useCallback(
+    (result) => {
+      if (!result.destination) return;
 
-  const onDragEnd = (result) => {
-    if (!result.destination) {
-      return;
-    }
+      const newWorks = Array.from(works);
+      const [reorderedItem] = newWorks.splice(result.source.index, 1);
+      newWorks.splice(result.destination.index, 0, reorderedItem);
 
-    const reorderedWorks = Array.from(works);
-    const [removed] = reorderedWorks.splice(result.source.index, 1);
-    reorderedWorks.splice(result.destination.index, 0, removed);
+      const updatedWorks = newWorks.map((work, index) => ({
+        ...work,
+        order: index + 1,
+      }));
 
-    setWorks(reorderedWorks);
-    input.onChange(reorderedWorks);
-  };
+      setWorks(updatedWorks);
+      input.onChange(updatedWorks);
+    },
+    [works, input]
+  );
 
   return (
     <div className="mb-4">
@@ -50,13 +41,17 @@ const CustomWorkList = wrapFieldsWithMeta(({ input, field, meta }) => {
               className="list-none p-0"
             >
               {works.map((work, index) => (
-                <Draggable key={work.id} draggableId={work.id} index={index}>
+                <Draggable
+                  key={work.id || `work-${index}`}
+                  draggableId={work.id || `work-${index}`}
+                  index={index}
+                >
                   {(provided, snapshot) => (
                     <li
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className={`flex items-center justify-between p-3 mb-2 bg-white border border-gray-300 rounded transition-all ${
+                      className={`flex items-center justify-between p-3 mb-2 bg-white border border-gray-300 rounded ${
                         snapshot.isDragging ? "bg-gray-100" : ""
                       }`}
                     >
@@ -77,29 +72,7 @@ const CustomWorkList = wrapFieldsWithMeta(({ input, field, meta }) => {
                           <line x1="21" y1="14" x2="3" y2="14"></line>
                           <line x1="21" y1="18" x2="3" y2="18"></line>
                         </svg>
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="feather feather-move hidden group-hover:block"
-                        >
-                          <polyline points="5 9 2 12 5 15"></polyline>
-                          <polyline points="9 5 12 2 15 5"></polyline>
-                          <polyline points="15 19 12 22 9 19"></polyline>
-                          <polyline points="19 9 22 12 19 15"></polyline>
-                        </svg>
-                        <span
-                          className={`ml-2 transition-opacity ${
-                            snapshot.isDragging ? "opacity-50" : ""
-                          }`}
-                        >
-                          {work.title}
-                        </span>
+                        <span className="ml-2">{work.title}</span>
                       </span>
                     </li>
                   )}
@@ -110,9 +83,6 @@ const CustomWorkList = wrapFieldsWithMeta(({ input, field, meta }) => {
           )}
         </Droppable>
       </DragDropContext>
-      {meta.touched && meta.error && (
-        <span className="text-red-500">{meta.error}</span>
-      )}
     </div>
   );
 });

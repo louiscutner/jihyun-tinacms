@@ -13,23 +13,41 @@ export default function Index(props) {
     data: props.data,
   });
 
+  const isAdminMode = props.isAdminMode;
   const [worksContent, setWorksContent] = useState([]);
-  const [isAdminMode] = useState(props.isAdminMode);
 
   useEffect(() => {
-    const works = isAdminMode
-      ? data.home?.worksList || []
-      : data?.workConnection?.edges?.map((edge) => edge.node) || [];
+    if (data.home && data.home.worksList) {
+      const updatedTitles = data.home.worksList.map((work) => work.title);
+      console.log("Updated work titles:", updatedTitles);
 
-    if (works.length > 0 && worksContent.length === 0) {
-      setWorksContent(works);
+      if (worksContent.length === 0) {
+        // Initial setup of works content
+        setWorksContent(data.home.worksList);
+      } else {
+        // Update existing works content
+        const updatedWorks = worksContent.map((work) => {
+          const newWork = data.home.worksList.find(
+            (newWork) => newWork.title === work.title
+          );
+          return { ...work, order: newWork ? newWork.order : work.order };
+        });
+        setWorksContent(updatedWorks);
+      }
     }
-  }, [data, isAdminMode, worksContent.length]);
+  }, [data, isAdminMode]);
+
+  const sortedWorksContent = [...worksContent].sort(
+    (a, b) => a.order - b.order
+  );
+
+  console.log(
+    "Sorted works content:",
+    sortedWorksContent.map((work) => work.title)
+  );
 
   const homeContent = data?.home?.body || "";
   const homeTitle = data?.home?.title || "";
-
-  const sortedWorks = worksContent.sort((a, b) => a.order - b.order);
 
   return (
     <Layout>
@@ -39,9 +57,10 @@ export default function Index(props) {
       <div data-tina-field={tinaField(data?.home, "body")}>
         <TinaMarkdown content={homeContent} />
       </div>
+      <h1>Works</h1>
       <ul>
-        {sortedWorks.map((work, index) => (
-          <li key={work._sys?.filename || index}>
+        {sortedWorksContent.map((work, index) => (
+          <li key={work.id || work._sys?.filename || index}>
             <Link
               href={`/${work._sys?.filename?.replace(/\.mdx$/, "") || "#"}`}
             >
