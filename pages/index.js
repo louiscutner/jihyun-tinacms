@@ -95,6 +95,7 @@ import { Layout } from "../components/Layout";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Link from "next/link";
+import React, { useState, useEffect } from "react";
 
 export default function Index(props) {
   const { data } = useTina({
@@ -103,28 +104,46 @@ export default function Index(props) {
     data: props.data,
   });
 
-  console.log("Fetched data (Admin Mode):", props.isAdminMode, data);
+  const [worksContent, setWorksContent] = useState([]);
+  const [isAdminMode, setIsAdminMode] = useState(props.isAdminMode);
 
-  const homeContent = data.home.body;
-  const homeTitle = data.home.title;
-  const works = data.workConnection
-    ? data.workConnection.edges.map((edge) => edge.node)
-    : [];
-  const sortedWorks = works.sort((a, b) => a.order - b.order);
+  useEffect(() => {
+    console.log("Fetched data (Admin Mode):", isAdminMode, data);
+
+    const works = isAdminMode
+      ? data.home?.worksList || []
+      : data?.workConnection?.edges?.map((edge) => edge.node) || [];
+
+    if (works.length > 0 && worksContent.length === 0) {
+      console.log("Setting works data:", works);
+      setWorksContent(works);
+      console.log("Works data:", works);
+    } else if (works.length === 0) {
+      console.log("No valid works data found.");
+    }
+  }, [data, isAdminMode, worksContent.length]);
+
+  const homeContent = data?.home?.body || "";
+  const homeTitle = data?.home?.title || "";
+
+  const sortedWorks = worksContent.sort((a, b) => a.order - b.order);
+  console.log("Sorted works:", sortedWorks);
 
   return (
     <Layout>
-      <div data-tina-field={tinaField(data.home, "title")}>
+      <div data-tina-field={tinaField(data?.home, "title")}>
         <h1>{homeTitle}</h1>
       </div>
-      <div data-tina-field={tinaField(data.home, "body")}>
+      <div data-tina-field={tinaField(data?.home, "body")}>
         <TinaMarkdown content={homeContent} />
       </div>
       <h1>Works</h1>
       <ul>
-        {sortedWorks.map((work) => (
-          <li key={work._sys.filename}>
-            <Link href={`/${work._sys.filename.replace(/\.mdx$/, "")}`}>
+        {sortedWorks.map((work, index) => (
+          <li key={work._sys?.filename || index}>
+            <Link
+              href={`/${work._sys?.filename?.replace(/\.mdx$/, "") || "#"}`}
+            >
               <a>{work.title}</a>
             </Link>
           </li>
@@ -134,8 +153,11 @@ export default function Index(props) {
   );
 }
 
-export const getStaticProps = async ({ preview }) => {
-  const isAdminMode = !!preview;
+export const getStaticProps = async (context) => {
+  const isAdminMode = context.preview || false;
+
+  console.log("Context:", context);
+  console.log("Preview mode (isAdminMode):", isAdminMode);
 
   const {
     data: homeData,
@@ -145,34 +167,38 @@ export const getStaticProps = async ({ preview }) => {
     relativePath: "index.mdx",
   });
 
-  console.log("Home data (Admin Mode):", isAdminMode, homeData);
+  console.log("Home data:", homeData);
 
-  const worksListData = await client.request({
-    query: `
-      query WorksConnection {
-        workConnection {
-          edges {
-            node {
-              _sys {
-                filename
+  let workConnectionData = {};
+  if (!isAdminMode) {
+    const worksListData = await client.request({
+      query: `
+        query WorksConnection {
+          workConnection {
+            edges {
+              node {
+                _sys {
+                  filename
+                }
+                title
+                order
+                body
               }
-              title
-              order
-              body
             }
           }
         }
-      }
-    `,
-  });
+      `,
+    });
 
-  console.log("Works list data (Admin Mode):", isAdminMode, worksListData);
+    console.log("Works list data:", worksListData);
+    workConnectionData = worksListData.data.workConnection;
+  }
 
   return {
     props: {
       data: {
         home: homeData.home,
-        workConnection: worksListData.data.workConnection,
+        workConnection: workConnectionData,
       },
       query,
       variables,
