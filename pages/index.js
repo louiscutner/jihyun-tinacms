@@ -39,7 +39,6 @@ export default function Index(props) {
       <div data-tina-field={tinaField(data?.home, "body")}>
         <TinaMarkdown content={homeContent} />
       </div>
-      <h1>Works</h1>
       <ul>
         {sortedWorks.map((work, index) => (
           <li key={work._sys?.filename || index}>
