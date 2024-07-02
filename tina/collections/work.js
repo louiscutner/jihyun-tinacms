@@ -1,3 +1,5 @@
+import OrderSetter from "../../components/OrderSetter";
+
 /**
  * @type {import('tinacms').Collection}
  */
@@ -11,25 +13,36 @@ const work = {
       name: "title",
       label: "Title",
       type: "string",
+      required: true,
     },
     {
       name: "order",
       label: "Order",
       type: "number",
+      ui: {
+        component: OrderSetter,
+      },
     },
     {
-      type: "rich-text",
+      type: "string",
       label: "Body",
       name: "body",
       isBody: true,
     },
   ],
   ui: {
-    defaultItem: () => ({
+    filename: {
+      readonly: true,
+      slugify: (values) => {
+        return `${
+          values?.title?.toLowerCase().replace(/ /g, "-") || "new-work"
+        }`;
+      },
+    },
+    defaultItem: {
       title: "New Work",
-      order: 0,
       body: "Work content here...",
-    }),
+    },
     router: ({ document }) => {
       return `/${document._sys.filename.replace(/\.mdx$/, "")}`;
     },
