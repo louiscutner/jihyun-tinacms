@@ -32,7 +32,6 @@ const CustomWorkList = ({ field, input }) => {
           })
         );
 
-        console.log("Fetched works:", fetchedWorks);
         setWorks(fetchedWorks);
       } catch (error) {
         console.error("Error fetching works:", error);
@@ -50,7 +49,6 @@ const CustomWorkList = ({ field, input }) => {
       const [reorderedItem] = newWorks.splice(result.source.index, 1);
       newWorks.splice(result.destination.index, 0, reorderedItem);
 
-      console.log("Updated works after drag:", newWorks);
       setWorks(newWorks);
 
       // Update Tina's form state (this won't affect our live data usage)
