@@ -1,17 +1,16 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { wrapFieldsWithMeta } from "tinacms";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { client } from "../tina/__generated__/client";
 
-const CustomWorkList = wrapFieldsWithMeta(({ input, field }) => {
-  const [works, setWorks] = useState(input.value || []);
+const CustomWorkList = ({ field, input }) => {
+  const [works, setWorks] = useState([]);
 
   useEffect(() => {
     const fetchWorks = async () => {
       try {
         const worksListData = await client.request({
           query: `
-            query GetWorks {
+            query WorksConnection {
               workConnection {
                 edges {
                   node {
@@ -19,7 +18,6 @@ const CustomWorkList = wrapFieldsWithMeta(({ input, field }) => {
                       filename
                     }
                     title
-                    order
                   }
                 }
               }
@@ -30,14 +28,12 @@ const CustomWorkList = wrapFieldsWithMeta(({ input, field }) => {
         const fetchedWorks = worksListData.data.workConnection.edges.map(
           (edge) => ({
             title: edge.node.title,
-            order: edge.node.order || 0,
             filename: edge.node._sys.filename,
           })
         );
-        const sortedWorks = fetchedWorks.sort((a, b) => a.order - b.order);
 
-        setWorks(sortedWorks);
-        input.onChange(sortedWorks);
+        console.log("Fetched works:", fetchedWorks);
+        setWorks(fetchedWorks);
       } catch (error) {
         console.error("Error fetching works:", error);
       }
@@ -54,23 +50,18 @@ const CustomWorkList = wrapFieldsWithMeta(({ input, field }) => {
       const [reorderedItem] = newWorks.splice(result.source.index, 1);
       newWorks.splice(result.destination.index, 0, reorderedItem);
 
-      const updatedWorks = newWorks.map((work, index) => ({
-        ...work,
-        order: index + 1,
-      }));
+      console.log("Updated works after drag:", newWorks);
+      setWorks(newWorks);
 
-      setWorks(updatedWorks);
-      input.onChange(updatedWorks);
+      // Update Tina's form state (this won't affect our live data usage)
+      input.onChange(newWorks.map((work) => ({ filename: work.filename })));
     },
     [works, input]
   );
 
-  console.log("Works:", works);
-
   return (
     <div className="mb-4">
       <label>{field.label}</label>
-      {field.description && <p>{field.description}</p>}
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="works">
           {(provided) => (
@@ -124,6 +115,6 @@ const CustomWorkList = wrapFieldsWithMeta(({ input, field }) => {
       </DragDropContext>
     </div>
   );
-});
+};
 
 export default CustomWorkList;

@@ -5,9 +5,6 @@ import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
 
 export default function Index(props) {
   const { data } = useTina({
@@ -16,47 +13,54 @@ export default function Index(props) {
     data: props.data,
   });
 
-  const isAdminMode = props.isAdminMode;
   const [worksContent, setWorksContent] = useState([]);
 
   useEffect(() => {
-    if (isAdminMode && data.home && data.home.worksList) {
-      const updatedTitles = data.home.worksList.map((work) => work.title);
-      console.log("Updated work titles (admin mode):", updatedTitles);
-
-      if (worksContent.length === 0) {
-        // Initial setup of works content
-        setWorksContent(data.home.worksList);
-      } else {
-        // Update existing works content
-        const updatedWorks = worksContent.map((work) => {
-          const newWork = data.home.worksList.find(
-            (newWork) => newWork.title === work.title
-          );
-          return { ...work, order: newWork ? newWork.order : work.order };
+    const fetchWorks = async () => {
+      try {
+        const worksListData = await client.request({
+          query: `
+            query WorksConnection {
+              workConnection {
+                edges {
+                  node {
+                    _sys {
+                      filename
+                    }
+                    title
+                  }
+                }
+              }
+            }
+          `,
         });
-        setWorksContent(updatedWorks);
+
+        const fetchedWorks = worksListData.data.workConnection.edges.map(
+          (edge) => ({
+            title: edge.node.title,
+            filename: edge.node._sys.filename,
+          })
+        );
+
+        // Sort fetched works based on the order in data.home.worksList
+        const sortedWorks = data.home.worksList
+          ? data.home.worksList
+              .map((item) =>
+                fetchedWorks.find((work) => work.filename === item.filename)
+              )
+              .filter(Boolean)
+          : fetchedWorks;
+
+        setWorksContent(sortedWorks);
+      } catch (error) {
+        console.error("Error fetching works:", error);
       }
-    } else if (!isAdminMode) {
-      // Use the works from props (fetched from the works folder)
-      setWorksContent(props.works);
-      console.log(
-        "Updated work titles (live mode):",
-        props.works.map((work) => work.title)
-      );
-    }
-  }, [data, isAdminMode, props.works]);
+    };
 
-  const sortedWorksContent = [...worksContent].sort(
-    (a, b) => a.order - b.order
-  );
+    fetchWorks();
+  }, [data.home.worksList]);
 
-  console.log(
-    "Sorted works content:",
-    sortedWorksContent.map((work) => work.title)
-  );
-
-  const homeContent = data?.home?.body || "";
+  const homeContent = data?.home?.content || "";
   const homeTitle = data?.home?.title || "";
 
   return (
@@ -64,18 +68,14 @@ export default function Index(props) {
       <div data-tina-field={tinaField(data?.home, "title")}>
         <h1>{homeTitle}</h1>
       </div>
-      <div data-tina-field={tinaField(data?.home, "body")}>
+      <div data-tina-field={tinaField(data?.home, "content")}>
         <TinaMarkdown content={homeContent} />
       </div>
       <h1>Works</h1>
       <ul>
-        {sortedWorksContent.map((work, index) => (
-          <li key={work.id || work._sys?.filename || work.slug || index}>
-            <Link
-              href={`/${
-                work.slug || work._sys?.filename?.replace(/\.mdx$/, "") || "#"
-              }`}
-            >
+        {worksContent.map((work, index) => (
+          <li key={work.filename || `work-${index}`}>
+            <Link href={`/${work.filename.replace(/\.mdx$/, "") || "#"}`}>
               <a>{work.title}</a>
             </Link>
           </li>
@@ -85,67 +85,16 @@ export default function Index(props) {
   );
 }
 
-export const getStaticProps = async (context) => {
-  const isAdminMode = context.preview || false;
-
-  const {
-    data: homeData,
-    query,
-    variables,
-  } = await client.queries.home({
+export const getStaticProps = async () => {
+  const { data, query, variables } = await client.queries.home({
     relativePath: "index.mdx",
   });
 
-  let workConnectionData = {};
-  let works = [];
-
-  if (!isAdminMode) {
-    const worksDirectory = path.join(process.cwd(), "content/works");
-    const filenames = fs.readdirSync(worksDirectory);
-
-    works = filenames.map((filename) => {
-      const filePath = path.join(worksDirectory, filename);
-      const fileContents = fs.readFileSync(filePath, "utf8");
-      const { data } = matter(fileContents);
-
-      return {
-        slug: filename.replace(".mdx", ""),
-        title: data.title,
-        order: data.order || 0,
-      };
-    });
-  } else {
-    const worksListData = await client.request({
-      query: `
-        query WorksConnection {
-          workConnection {
-            edges {
-              node {
-                _sys {
-                  filename
-                }
-                title
-                order
-                body
-              }
-            }
-          }
-        }
-      `,
-    });
-    workConnectionData = worksListData.data.workConnection;
-  }
-
   return {
     props: {
-      data: {
-        home: homeData.home,
-        workConnection: workConnectionData,
-      },
+      data,
       query,
       variables,
-      isAdminMode,
-      works,
     },
   };
 };

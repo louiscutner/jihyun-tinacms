@@ -1,8 +1,4 @@
-/**
- * @type {import('tinacms').Collection}
- */
-
-import CustomWorkList from "../../components/CustomWorkList"; // Ensure this import is correct
+import CustomWorkList from "../../components/CustomWorkList";
 
 const home = {
   label: "Home Page",
@@ -25,24 +21,13 @@ const home = {
     },
     {
       name: "worksList",
-      label: "Reorder Works",
+      label: "Works List",
       type: "object",
       list: true,
       ui: {
         component: CustomWorkList,
-        description: "Drag and drop to reorder works.",
       },
       fields: [
-        {
-          name: "title",
-          label: "Title",
-          type: "string",
-        },
-        {
-          name: "order",
-          label: "Order",
-          type: "number",
-        },
         {
           name: "filename",
           label: "Filename",
@@ -51,11 +36,8 @@ const home = {
       ],
     },
   ],
-
   ui: {
-    router: () => {
-      return `/`; // Ensure this matches your home page route
-    },
+    router: () => "/",
   },
 };
 
