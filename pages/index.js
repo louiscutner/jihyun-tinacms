@@ -13,10 +13,9 @@ export default function HomePage(props) {
   return (
     <Layout>
       <h1 data-tina-field={tinaField(data.home, "title")}>{data.home.title}</h1>
-      <div data-tina-field={tinaField(data.home, "content")}>
+      <h2 data-tina-field={tinaField(data.home, "content")}>
         {data.home.content}
-      </div>
-      <h2>Featured Works</h2>
+      </h2>
       <ul>
         {data.home.featuredWorks.map((featuredWork, index) => (
           <li key={index}>
