@@ -10,19 +10,20 @@ export default function HomePage(props) {
     data: props.data,
   });
 
-  console.log("HomePage data:", data);
-
   return (
     <Layout>
       <h1 data-tina-field={tinaField(data.home, "title")}>{data.home.title}</h1>
-      <div data-tina-field={tinaField(data.home, "body")}>
-        <TinaMarkdown content={data.home.body} />
+      <div data-tina-field={tinaField(data.home, "content")}>
+        {data.home.content}
       </div>
       <h2>Featured Works</h2>
       <ul>
         {data.home.featuredWorks.map((featuredWork, index) => (
           <li key={index}>
-            <a href={`/${featuredWork.work._sys.filename}`}>
+            <a
+              href={`/${featuredWork.work._sys.filename}`}
+              data-tina-field={tinaField(featuredWork, "title")}
+            >
               {featuredWork.title}
             </a>
           </li>
