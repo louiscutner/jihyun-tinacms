@@ -24,18 +24,7 @@ const home = {
       label: "Featured Works",
       ui: {
         itemProps: (item) => ({
-          label:
-            item?.title ||
-            item?.work
-              ?.split("/")
-              .pop()
-              .replace(/\.[^/.]+$/, "") ||
-            "Untitled Work",
-        }),
-        defaultItem: () => ({
-          work: "",
-          title: "",
-          order: 0,
+          label: item?.title || "Untitled Work",
         }),
       },
       fields: [
@@ -45,17 +34,6 @@ const home = {
           type: "reference",
           collections: ["work"],
           required: true,
-          ui: {
-            validate: (value, allValues, meta, field) => {
-              if (value && (!allValues.title || allValues.title === "")) {
-                const filename = value
-                  .split("/")
-                  .pop()
-                  .replace(/\.[^/.]+$/, "");
-                meta.form.change("title", filename);
-              }
-            },
-          },
         },
         {
           name: "title",

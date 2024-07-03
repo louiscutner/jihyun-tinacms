@@ -25,9 +25,7 @@ export default function WorkPage(props) {
 
   return (
     <Layout>
-      <div data-tina-field={tinaField(data.work, "_sys.filename")}>
-        <h1>{workTitle}</h1>
-      </div>
+      <h1>{workTitle}</h1>
       <div data-tina-field={tinaField(data.work, "body")}>
         {content ? (
           <TinaMarkdown content={content} />
