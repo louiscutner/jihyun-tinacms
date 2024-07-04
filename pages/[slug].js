@@ -17,21 +17,11 @@ export default function WorkPage(props) {
     data.work._sys.filename ||
     "Untitled Work";
 
-  const content = data.work.body || "";
-
-  console.log("WorkPage data:", data);
-  console.log("Work title:", workTitle);
-  console.log("Work content:", content);
-
   return (
     <Layout>
       <h1>{workTitle}</h1>
-      <div data-tina-field={tinaField(data.work, "body")}>
-        {content ? (
-          <TinaMarkdown content={content} />
-        ) : (
-          <p>No content available</p>
-        )}
+      <div data-tina-field={tinaField(data.work, "description")}>
+        {data.work.description}
       </div>
     </Layout>
   );
