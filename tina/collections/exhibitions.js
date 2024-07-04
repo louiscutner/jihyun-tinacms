@@ -8,17 +8,6 @@ export default {
   format: "mdx",
   fields: [
     {
-      name: "title",
-      label: "Title",
-      type: "string",
-    },
-    {
-      name: "body",
-      label: "Main Content",
-      type: "rich-text",
-      isBody: true,
-    },
-    {
       name: "section",
       label: "Section",
       type: "object",
@@ -26,9 +15,10 @@ export default {
       ui: {
         defaultItem: {
           title: "New Section",
-          subheading: "Subheading",
-          color: "red",
-          body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo expedita voluptas culpa sapiente alias molestiae. Numquam corrupti in laborum sed rerum et corporis.",
+          location: "",
+          includeStartDate: true,
+          includeEndDate: true,
+          includeDays: false,
         },
         itemProps: (item) => ({
           label: item.title,
@@ -41,36 +31,50 @@ export default {
           type: "string",
         },
         {
-          name: "subheading",
-          label: "Subheading",
+          name: "location",
+          label: "Location",
           type: "string",
         },
         {
-          name: "color",
-          label: "Color",
-          type: "string",
+          name: "includeStartDate",
+          label: "Include Start Date",
+          type: "boolean",
+        },
+        {
+          name: "includeEndDate",
+          label: "Include End Date",
+          type: "boolean",
+        },
+        {
+          name: "includeDays",
+          label: "Include Days",
+          type: "boolean",
+        },
+        {
+          name: "startDate",
+          label: "Start Date",
+          type: "datetime",
           ui: {
-            component: "select",
-            options: ["red", "blue", "green"],
+            dateFormat: "YYYY-MM-DD",
           },
         },
         {
-          name: "body",
-          label: "Body",
-          type: "string",
+          name: "endDate",
+          label: "End Date",
+          type: "datetime",
           ui: {
-            component: "textarea",
+            dateFormat: "YYYY-MM-DD",
           },
+        },
+        {
+          name: "image",
+          label: "Image",
+          type: "image",
         },
       ],
     },
   ],
   ui: {
-    defaultItem: () => ({
-      title: "New Exhibitions Page",
-      body: "Exhibitions content here...",
-      section: [],
-    }),
     router: () => {
       return `/exhibitions`;
     },

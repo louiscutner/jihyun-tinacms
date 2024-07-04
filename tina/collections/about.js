@@ -8,61 +8,85 @@ export default {
   format: "mdx",
   fields: [
     {
-      name: "title",
-      label: "Title",
-      type: "string",
-    },
-    {
       name: "body",
-      label: "Main Content",
+      label: "Bio Content",
+      description: "Add the content for your bio here.",
       type: "rich-text",
       isBody: true,
     },
     {
-      name: "section",
-      label: "Section",
+      name: "cv",
+      label: "CV",
+      description: "Add your CV here.",
+      type: "image",
+    },
+    {
+      name: "image1",
+      label: "Left Image",
+      type: "image",
+      description: "Upload the left profile image here.",
+    },
+    {
+      name: "image2",
+      label: "Right Image",
+      type: "image",
+      description: "Upload the right profile image here.",
+    },
+    {
+      name: "education",
+      label: "Education",
       type: "object",
       list: true,
-      ui: {
-        defaultItem: {
-          title: "New Section",
-          subheading: "Subheading",
-          color: "red",
-          body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo expedita voluptas culpa sapiente alias molestiae. Numquam corrupti in laborum sed rerum et corporis.",
-        },
-        itemProps: (item) => ({
-          label: item.title,
-        }),
-      },
       fields: [
         {
-          name: "title",
-          label: "Title",
-          type: "string",
-        },
-        {
-          name: "subheading",
-          label: "Subheading",
-          type: "string",
-        },
-        {
-          name: "color",
-          label: "Color",
-          type: "string",
+          name: "startDate",
+          label: "Start Date",
+          type: "datetime",
           ui: {
-            component: "select",
-            options: ["red", "blue", "green"],
+            dateFormat: "YYYY",
           },
         },
         {
-          name: "body",
-          label: "Body",
-          type: "string",
+          name: "endDate",
+          label: "End Date",
+          type: "datetime",
           ui: {
-            component: "textarea",
+            dateFormat: "YYYY",
           },
+        },
+        {
+          name: "description",
+          label: "Description",
+          type: "string",
         },
       ],
+      itemProps: (item) => ({
+        label: item.description || "New Education",
+      }),
+    },
+    {
+      name: "publish_ward",
+      label: "Publish / Award",
+      type: "object",
+      list: true,
+      fields: [
+        {
+          name: "date",
+          label: "Date",
+          type: "datetime",
+          ui: {
+            dateFormat: "MMM, YYYY",
+          },
+        },
+        {
+          name: "description",
+          label: "Description",
+          type: "string",
+        },
+      ],
+      itemProps: (item) => ({
+        label: item.description || "New Publish / Award",
+      }),
     },
   ],
   ui: {
