@@ -1,5 +1,3 @@
-import { list } from "postcss";
-
 const work = {
   label: "Works",
   name: "work",
@@ -47,7 +45,7 @@ const work = {
     },
     {
       type: "object",
-      label: "Available From Link (optional)",
+      label: "'Available From' Link (optional)",
       name: "link",
       fields: [
         {
