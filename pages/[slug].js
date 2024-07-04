@@ -63,6 +63,43 @@ export default function WorkPage(props) {
           )}
         </tbody>
       </table>
+      {/* map from work.gallery each section. within each section, display every image with a map*/}
+      <div className="pt-4">
+        {data.work.gallery.map((section, index) => (
+          <div key={index}>
+            <div className="flex">
+              {section.image1 && (
+                <img
+                  className="h-64"
+                  src={section.image1}
+                  data-tina-field={tinaField(section, "image1")}
+                />
+              )}
+              {section.image2 && (
+                <img
+                  className="h-64"
+                  src={section.image2}
+                  data-tina-field={tinaField(section, "image2")}
+                />
+              )}
+              {section.image3 && (
+                <img
+                  className="h-64"
+                  src={section.image3}
+                  data-tina-field={tinaField(section, "image3")}
+                />
+              )}
+              {section.image4 && (
+                <img
+                  className="h-64"
+                  src={section.image4}
+                  data-tina-field={tinaField(section, "image4")}
+                />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
     </Layout>
   );
 }
