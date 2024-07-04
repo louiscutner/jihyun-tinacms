@@ -1,4 +1,3 @@
-import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { Layout } from "../components/Layout";
 import { tinaField, useTina } from "tinacms/dist/react";
 import { client } from "../tina/__generated__/client";
@@ -12,18 +11,22 @@ export default function HomePage(props) {
 
   return (
     <Layout>
-      <h1 data-tina-field={tinaField(data.home, "title")}>{data.home.title}</h1>
-      <h2 data-tina-field={tinaField(data.home, "content")}>
-        {data.home.content}
-      </h2>
       <ul>
         {data.home.featuredWorks.map((featuredWork, index) => (
-          <li key={index}>
-            <a
-              href={`/${featuredWork.work._sys.filename}`}
-              data-tina-field={tinaField(featuredWork, "title")}
-            >
-              {featuredWork.title}
+          <li key={index} className="p-3 m-3 bg-stone-200 rounded-lg w-auto">
+            <a href={`/${featuredWork.work._sys.filename}`}>
+              <a
+                href={`/${featuredWork.work._sys.filename}`}
+                data-tina-field={tinaField(featuredWork, "title")}
+              >
+                {featuredWork.title}
+              </a>
+              {/* featured work image - tinafield*/}
+              <img
+                className="w-1/3"
+                src={featuredWork.image}
+                data-tina-field={tinaField(featuredWork, "image")}
+              />
             </a>
           </li>
         ))}

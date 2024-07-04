@@ -14,7 +14,7 @@ export default {
       list: true,
       ui: {
         defaultItem: {
-          title: "New Section",
+          title: "New Exhibition",
           location: "",
           includeStartDate: true,
           includeEndDate: true,

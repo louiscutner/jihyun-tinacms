@@ -26,7 +26,7 @@ export const Layout = (props) => {
           <a className="bg-green-500 m-3 p-3">Exhibitions</a>
         </Link>
       </header>
-      <main className="text-blue-500 pt-10">{props.children}</main>
+      <main className="pt-10">{props.children}</main>
     </div>
   );
 };

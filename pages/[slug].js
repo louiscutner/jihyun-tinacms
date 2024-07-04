@@ -1,7 +1,7 @@
-import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { Layout } from "../components/Layout";
 import { tinaField, useTina } from "tinacms/dist/react";
 import { client } from "../tina/__generated__/client";
+import { useEffect, useState } from "react";
 
 export default function WorkPage(props) {
   const { data } = useTina({
@@ -10,12 +10,20 @@ export default function WorkPage(props) {
     data: props.data,
   });
 
-  const workTitle =
-    data.home?.featuredWorks?.find(
+  const [workTitle, setWorkTitle] = useState("");
+
+  useEffect(() => {
+    const newWorkTitle = data.home?.featuredWorks?.find(
       (item) => item.work._sys.filename === data.work._sys.filename
-    )?.title ||
-    data.work._sys.filename ||
-    "Untitled Work";
+    )?.title;
+    if (newWorkTitle !== undefined) {
+      setWorkTitle(newWorkTitle);
+    }
+  }, [data]);
+
+  if (workTitle === "") {
+    setWorkTitle(data.work._sys.filename || "Untitled Work");
+  }
 
   return (
     <Layout>
@@ -23,6 +31,38 @@ export default function WorkPage(props) {
       <div data-tina-field={tinaField(data.work, "description")}>
         {data.work.description}
       </div>
+
+      <table className="table-auto mt-5">
+        <tbody>
+          <tr key="Title">
+            <td className="pr-10">Title</td>
+            <td>{workTitle}</td>
+          </tr>
+          {data.work.info.map((info, index) => (
+            <tr key={index}>
+              <td className="pr-10" data-tina-field={tinaField(info, "key")}>
+                {info.key}
+              </td>
+              <td data-tina-field={tinaField(info, "value")}>{info.value}</td>
+            </tr>
+          ))}
+          {data.work.link && (
+            <tr key="Link">
+              <td className="pr-10">Available From</td>
+              <td>
+                <a
+                  href={data.work.link.url}
+                  target="_blank"
+                  className="underline text-blue-500"
+                  data-tina-field={tinaField(data.work.link, "text")}
+                >
+                  {data.work.link.text}
+                </a>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </Layout>
   );
 }

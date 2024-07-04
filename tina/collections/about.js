@@ -83,6 +83,19 @@ export default {
           label: "Description",
           type: "string",
         },
+        {
+          type: "string",
+          label: "URL",
+          name: "url",
+          description: "The URL of the link (Optional).",
+        },
+        {
+          type: "string",
+          label: "Text",
+          name: "text",
+          description:
+            "The text to display for the link (if left blank, the URL will be displayed).",
+        },
       ],
       itemProps: (item) => ({
         label: item.description || "New Publish / Award",

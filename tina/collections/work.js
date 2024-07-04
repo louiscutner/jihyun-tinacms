@@ -52,7 +52,7 @@ const work = {
           type: "string",
           label: "URL",
           name: "url",
-          description: "The URL of the link.",
+          description: "The URL of the link, e.g. https://www.google.com.",
         },
         {
           type: "string",

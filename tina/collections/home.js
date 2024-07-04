@@ -8,16 +8,6 @@ const home = {
   },
   fields: [
     {
-      name: "title",
-      label: "Title",
-      type: "string",
-    },
-    {
-      name: "content",
-      label: "Content",
-      type: "string",
-    },
-    {
       type: "object",
       list: true,
       name: "featuredWorks",
@@ -40,6 +30,11 @@ const home = {
           label: "Featured Title",
           type: "string",
           description: "You can edit this title for featuring purposes.",
+        },
+        {
+          name: "image",
+          label: "Featured Image",
+          type: "image",
         },
       ],
     },
