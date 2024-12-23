@@ -11,6 +11,9 @@ module.exports = {
         buttonHover: "#e2d0b2",
         background: "#f8f2ea",
       },
+      fontFamily: {
+        sans: ["Mulish", "sans-serif"],
+      },
     },
   },
   plugins: [],

@@ -9,7 +9,7 @@ export default function HomePage(props) {
     data: props.data,
   });
 
-  console.log("data", data.home.quote.text);
+  const gap = data.home.imageSpacing || 0;
 
   const Image = ({ height, image, item, tinaName, widthFraction = 1 }) => {
     const aspectRatio = height || 1; // Default aspect ratio
@@ -33,7 +33,6 @@ export default function HomePage(props) {
 
   return (
     <Layout>
-      {/* Add padding to the container */}
       <div className="px-3 sm:px-8">
         <ul className="flex flex-col gap-8">
           {/* print json of all data */}
@@ -47,7 +46,7 @@ export default function HomePage(props) {
 
           {data.home.quote.showQuote && (
             <div
-              className="text-2xl font-serif text-center"
+              className="text-2xl text-center italic font-thin"
               data-tina-field={tinaField(data.home, "quote.text")}
             >
               {data.home.quote.text}
@@ -57,7 +56,10 @@ export default function HomePage(props) {
           {data.home.imageGallery.showGallery && (
             <>
               {data.home.imageGallery.mobileImageGallery && (
-                <div className="flex flex-col gap-2 md:hidden">
+                <div
+                  className="flex flex-col md:hidden"
+                  style={{ gap: `${gap}px` }}
+                >
                   {data.home.imageGallery.mobileImageGallery.map(
                     (item, index) => {
                       if (
@@ -78,7 +80,10 @@ export default function HomePage(props) {
                         "HomeImageGalleryMobileImageGalleryTwoImages"
                       ) {
                         return (
-                          <div className="flex flex-row gap-2">
+                          <div
+                            className="flex flex-row"
+                            style={{ gap: `${gap}px` }}
+                          >
                             <Image
                               key={index}
                               item={item}
@@ -101,7 +106,10 @@ export default function HomePage(props) {
                 </div>
               )}
               {data.home.imageGallery.desktopImageGallery && (
-                <div className="md:flex flex-col gap-2 hidden">
+                <div
+                  className="md:flex flex-col hidden"
+                  style={{ gap: `${gap}px` }}
+                >
                   {data.home.imageGallery.desktopImageGallery.map(
                     (item, index) => {
                       if (
@@ -110,7 +118,11 @@ export default function HomePage(props) {
                       ) {
                         const isWideRight = item.wideImage === "right";
                         return (
-                          <div key={index} className="grid grid-cols-12 gap-2">
+                          <div
+                            key={index}
+                            className="grid grid-cols-12"
+                            style={{ gap: `${gap}px` }}
+                          >
                             <div
                               className={`${
                                 isWideRight ? "col-span-4" : "col-span-8"
@@ -144,7 +156,11 @@ export default function HomePage(props) {
                         "HomeImageGalleryDesktopImageGalleryTwoImagesEqualWidth"
                       ) {
                         return (
-                          <div key={index} className="flex flex-row gap-2">
+                          <div
+                            key={index}
+                            className="flex flex-row"
+                            style={{ gap: `${gap}px` }}
+                          >
                             <Image
                               item={item}
                               height={item.height}
@@ -164,7 +180,11 @@ export default function HomePage(props) {
                         "HomeImageGalleryDesktopImageGalleryThreeImages"
                       ) {
                         return (
-                          <div key={index} className="grid grid-cols-12 gap-2">
+                          <div
+                            key={index}
+                            className="grid grid-cols-12"
+                            style={{ gap: `${gap}px` }}
+                          >
                             <div className="col-span-4">
                               <Image
                                 item={item}

@@ -266,6 +266,12 @@ const home = {
         },
       ],
     },
+    {
+      type: "number",
+      name: "imageSpacing",
+      label: "Image Spacing",
+      description: "The spacing between images.",
+    },
   ],
   ui: {
     router: () => "/",
