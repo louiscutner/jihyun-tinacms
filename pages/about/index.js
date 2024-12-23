@@ -14,12 +14,21 @@ export default function About(props) {
   const title = data.about.title;
   return (
     <Layout>
-      <div data-tina-field={tinaField(data.about, "title")}>
-        <h1>{title}</h1>
-      </div>
-      <div data-tina-field={tinaField(data.about, "body")}>
+      <h1>About</h1>
+      <div
+        className="mb-8 mt-4"
+        data-tina-field={tinaField(data.about, "body")}
+      >
         <TinaMarkdown content={content} />
       </div>
+      <a
+        href={data.about.cv}
+        target="_blank"
+        className="underline text-blue-500 p-3 bg-stone-200 rounded-lg w-auto"
+        data-tina-field={tinaField(data.about, "cv")}
+      >
+        Download CV
+      </a>
     </Layout>
   );
 }

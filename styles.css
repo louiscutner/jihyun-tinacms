@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@media screen and (min-width: 640px) {
+    .bodyHeight {
+        height: calc(100vh - 8rem);
+    }    
+}
+
+body {
+    background-color: #f8f2ea;
+    /* button: #f0e3d1;
+    buttonHover: #e2d0b2; */
+}  

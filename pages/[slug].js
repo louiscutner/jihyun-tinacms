@@ -12,6 +12,8 @@ export default function WorkPage(props) {
 
   const [workTitle, setWorkTitle] = useState("");
 
+  console.log(data);
+
   useEffect(() => {
     const newWorkTitle = data.home?.featuredWorks?.find(
       (item) => item.work._sys.filename === data.work._sys.filename
@@ -27,11 +29,11 @@ export default function WorkPage(props) {
 
   return (
     <Layout>
+      Hi there
       <h1>{workTitle}</h1>
       <div data-tina-field={tinaField(data.work, "description")}>
         {data.work.description}
       </div>
-
       <table className="table-auto mt-5">
         <tbody>
           <tr key="Title">
@@ -131,6 +133,7 @@ export const getStaticProps = async ({ params }) => {
       data: {
         work: workData.work,
         home: homeData.home,
+        test: params,
       },
       query,
       variables,
@@ -140,11 +143,22 @@ export const getStaticProps = async ({ params }) => {
 
 export const getStaticPaths = async () => {
   const worksListData = await client.queries.workConnection();
-
   return {
     paths: worksListData.data.workConnection.edges.map((edge) => ({
-      params: { slug: edge.node._sys.filename.replace(/\.mdx$/, "") },
+      params: {
+        slug: edge.node._sys.filename.replace(/\.mdx$/, ""),
+        // slug: "test.mdx",
+      },
     })),
     fallback: false,
   };
+  // return {
+  //   paths: worksListData.data.homeConnection.edges.map((edge) => ({
+  //     params: {
+  //       slug: edge.node._sys.filename.replace(/\.mdx$/, ""),
+  //       // slug: "test.mdx",
+  //     },
+  //   })),
+  //   fallback: false,
+  // };
 };
