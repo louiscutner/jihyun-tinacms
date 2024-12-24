@@ -38,13 +38,13 @@ export default function HomePage(props) {
   return (
     <Layout>
       <div
-        className="px-3 sm:px-8"
+        className=""
         style={{
           color: fontColor,
           backgroundColor: backgroundColor,
         }}
       >
-        <ul className="flex flex-col gap-8">
+        <ul className="flex flex-col md:w-200 lg:w-300 xl:w-400 md:mx-auto">
           {/* print json of all data */}
           {/* <pre>
             {JSON.stringify(
@@ -55,25 +55,25 @@ export default function HomePage(props) {
           </pre> */}
 
           {data.home.quote.showQuote && (
-            <>
+            <div className="mt-16 lg:mt-24">
               <div
-                className="text-2xl text-center italic font-thin"
+                className="text-xl lg:text-2xl text-center italic font-thin w-auto mx-16 sm:mx-28 lg:mx-40 xl:mx-64 leading-normal lg:leading-relaxed"
                 data-tina-field={tinaField(data.home, "quote.text")}
               >
                 {data.home.quote.text}
               </div>
               {data.home.quote.showLine && (
                 <div
-                  className="border w-20 mx-auto"
+                  className="border-t w-20 sm:w-28 mx-auto mt-5 lg:mt-7"
                   style={{ borderColor: lineColor }}
                   data-tina-field={tinaField(data.home.quote, "lineColour")}
                 ></div>
               )}
-            </>
+            </div>
           )}
 
           {data.home.imageGallery.showGallery && (
-            <>
+            <div className="mt-16 lg:mt-24">
               {data.home.imageGallery.mobileImageGallery && (
                 <div
                   className="flex flex-col md:hidden"
@@ -247,7 +247,7 @@ export default function HomePage(props) {
                   )}
                 </div>
               )}
-            </>
+            </div>
           )}
         </ul>
       </div>

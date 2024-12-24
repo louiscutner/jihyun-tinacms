@@ -14,6 +14,12 @@ module.exports = {
       fontFamily: {
         sans: ["Mulish", "sans-serif"],
       },
+      spacing: {
+        68: "17rem",
+        200: "45rem",
+        300: "55rem",
+        400: "70rem",
+      },
     },
   },
   plugins: [],
