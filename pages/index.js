@@ -120,13 +120,11 @@ export default function HomePage(props) {
                         return (
                           <div
                             key={index}
-                            className="grid grid-cols-12"
+                            className="flex" // Changed from grid grid-cols-12 to flex
                             style={{ gap: `${gap}px` }}
                           >
                             <div
-                              className={`${
-                                isWideRight ? "col-span-4" : "col-span-8"
-                              }`}
+                              className={`${isWideRight ? "w-1/3" : "w-2/3"}`} // Changed from col-span to w-1/3 or w-2/3
                             >
                               <Image
                                 item={item}
@@ -137,9 +135,7 @@ export default function HomePage(props) {
                               />
                             </div>
                             <div
-                              className={`${
-                                isWideRight ? "col-span-8" : "col-span-4"
-                              }`}
+                              className={`${isWideRight ? "w-2/3" : "w-1/3"}`} // Changed from col-span to w-2/3 or w-1/3
                             >
                               <Image
                                 item={item}
