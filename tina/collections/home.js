@@ -26,6 +26,23 @@ const home = {
           label: "Quote",
           description: "A quote for the home page.",
         },
+        {
+          type: "boolean",
+          name: "showLine",
+          label: "Show Line",
+        },
+        {
+          type: "string",
+          name: "lineColour",
+          label: "Line Colour",
+          description: "The line colour under the quote.",
+          required: true,
+          ui: {
+            component: "color",
+            colorFormat: "hex",
+            widget: "sketch",
+          },
+        },
       ],
     },
     {
@@ -128,6 +145,41 @@ const home = {
           label: "Desktop Image Gallery",
           list: true,
           templates: [
+            {
+              label: "One Image",
+              name: "oneImage",
+              fields: [
+                {
+                  type: "image",
+                  name: "image",
+                  label: "Image",
+                },
+                {
+                  label: "Height",
+                  name: "height",
+                  type: "number",
+                  description: "Choose the height of the image.",
+                  ui: {
+                    parse: (val) => Number(val),
+                    // wrapping our component in wrapFieldsWithMeta renders our label & description.
+                    component: wrapFieldsWithMeta(({ input }) => {
+                      return (
+                        <input
+                          name="height"
+                          id="height"
+                          type="range"
+                          min="0"
+                          max="10"
+                          step=".1"
+                          // This will pass along props.input.onChange to set our form values as this input changes.
+                          {...input}
+                        />
+                      );
+                    }),
+                  },
+                },
+              ],
+            },
             {
               label: "Two Images (equal width)",
               name: "twoImagesEqualWidth",
@@ -264,13 +316,44 @@ const home = {
             },
           ],
         },
+        {
+          type: "number",
+          name: "imageSpacing",
+          label: "Image Spacing",
+          description: "The spacing between images.",
+        },
       ],
     },
     {
-      type: "number",
-      name: "imageSpacing",
-      label: "Image Spacing",
-      description: "The spacing between images.",
+      type: "object",
+      name: "theme",
+      label: "Theme",
+      fields: [
+        {
+          type: "string",
+          name: "backgroundColour",
+          label: "Background Colour",
+          description: "The background colour of the website.",
+          required: true,
+          ui: {
+            component: "color",
+            colorFormat: "hex",
+            widget: "sketch",
+          },
+        },
+        {
+          type: "string",
+          name: "textColour",
+          label: "Text Colour",
+          description: "The text colour of the website.",
+          required: true,
+          ui: {
+            component: "color",
+            colorFormat: "hex",
+            widget: "sketch",
+          },
+        },
+      ],
     },
   ],
   ui: {

@@ -9,7 +9,11 @@ export default function HomePage(props) {
     data: props.data,
   });
 
-  const gap = data.home.imageSpacing || 0;
+  const gap = data.home.imageGallery.imageSpacing || 0;
+
+  const fontColor = data.home.theme.textColour;
+  const backgroundColor = data.home.theme.backgroundColour;
+  const lineColor = data.home.quote.lineColour;
 
   const Image = ({ height, image, item, tinaName, widthFraction = 1 }) => {
     const aspectRatio = height || 1; // Default aspect ratio
@@ -33,7 +37,13 @@ export default function HomePage(props) {
 
   return (
     <Layout>
-      <div className="px-3 sm:px-8">
+      <div
+        className="px-3 sm:px-8"
+        style={{
+          color: fontColor,
+          backgroundColor: backgroundColor,
+        }}
+      >
         <ul className="flex flex-col gap-8">
           {/* print json of all data */}
           {/* <pre>
@@ -45,12 +55,21 @@ export default function HomePage(props) {
           </pre> */}
 
           {data.home.quote.showQuote && (
-            <div
-              className="text-2xl text-center italic font-thin"
-              data-tina-field={tinaField(data.home, "quote.text")}
-            >
-              {data.home.quote.text}
-            </div>
+            <>
+              <div
+                className="text-2xl text-center italic font-thin"
+                data-tina-field={tinaField(data.home, "quote.text")}
+              >
+                {data.home.quote.text}
+              </div>
+              {data.home.quote.showLine && (
+                <div
+                  className="border w-20 mx-auto"
+                  style={{ borderColor: lineColor }}
+                  data-tina-field={tinaField(data.home.quote, "lineColour")}
+                ></div>
+              )}
+            </>
           )}
 
           {data.home.imageGallery.showGallery && (
@@ -113,6 +132,19 @@ export default function HomePage(props) {
                   {data.home.imageGallery.desktopImageGallery.map(
                     (item, index) => {
                       if (
+                        item.__typename ===
+                        "HomeImageGalleryDesktopImageGalleryOneImage"
+                      ) {
+                        return (
+                          <Image
+                            key={index}
+                            item={item}
+                            height={item.height}
+                            image={item.image}
+                            tinaName={"image"}
+                          />
+                        );
+                      } else if (
                         item.__typename ===
                         "HomeImageGalleryDesktopImageGalleryTwoImagesOneWide"
                       ) {
