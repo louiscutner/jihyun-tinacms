@@ -76,7 +76,7 @@ export default function HomePage(props) {
             <div className="mt-16 lg:mt-24">
               {data.home.imageGallery.mobileImageGallery && (
                 <div
-                  className="flex flex-col md:hidden"
+                  className="flex flex-col sm:hidden"
                   style={{ gap: `${gap}px` }}
                 >
                   {data.home.imageGallery.mobileImageGallery.map(
@@ -126,7 +126,7 @@ export default function HomePage(props) {
               )}
               {data.home.imageGallery.desktopImageGallery && (
                 <div
-                  className="md:flex flex-col hidden"
+                  className="sm:flex flex-col hidden"
                   style={{ gap: `${gap}px` }}
                 >
                   {data.home.imageGallery.desktopImageGallery.map(
