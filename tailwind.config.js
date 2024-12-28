@@ -20,6 +20,13 @@ module.exports = {
         300: "55rem",
         400: "70rem",
       },
+      fontSize: {
+        smmd: "0.95rem",
+      },
+      height: {
+        0.08: "0.08rem",
+        0.1: "0.1rem",
+      },
     },
   },
   plugins: [],

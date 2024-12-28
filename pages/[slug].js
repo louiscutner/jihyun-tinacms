@@ -1,4 +1,3 @@
-import { Layout } from "../components/Layout";
 import { tinaField, useTina } from "tinacms/dist/react";
 import { client } from "../tina/__generated__/client";
 import { useEffect, useState } from "react";
@@ -28,7 +27,7 @@ export default function WorkPage(props) {
   }
 
   return (
-    <Layout>
+    <>
       Hi there
       <h1>{workTitle}</h1>
       <div data-tina-field={tinaField(data.work, "description")}>
@@ -102,7 +101,7 @@ export default function WorkPage(props) {
           </div>
         ))}
       </div>
-    </Layout>
+    </>
   );
 }
 

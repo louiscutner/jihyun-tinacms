@@ -1,5 +1,4 @@
 import { TinaMarkdown } from "tinacms/dist/rich-text";
-import { Layout } from "../../components/Layout";
 import { tinaField, useTina } from "tinacms/dist/react";
 import { client } from "../../tina/__generated__/client";
 
@@ -13,7 +12,7 @@ export default function About(props) {
   const content = data.about.body;
   const title = data.about.title;
   return (
-    <Layout>
+    <>
       <h1>About</h1>
       <div
         className="mb-8 mt-4"
@@ -29,7 +28,7 @@ export default function About(props) {
       >
         Download CV
       </a>
-    </Layout>
+    </>
   );
 }
 

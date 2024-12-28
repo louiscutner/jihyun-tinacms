@@ -12,6 +12,19 @@ const home = {
   fields: [
     {
       type: "object",
+      name: "header",
+      label: "Header",
+      fields: [
+        {
+          type: "string",
+          name: "title",
+          label: "Title",
+          description: "The title of the website.",
+        },
+      ],
+    },
+    {
+      type: "object",
       name: "quote",
       label: "Quote",
       fields: [
@@ -326,6 +339,90 @@ const home = {
     },
     {
       type: "object",
+      name: "footer",
+      label: "Footer",
+      fields: [
+        {
+          type: "object",
+          name: "mailingList",
+          label: "Mailing List",
+          fields: [
+            {
+              type: "boolean",
+              name: "toggle",
+              label: "Show / hide",
+              description:
+                "Show or hide the button to sign up to the mailing list.",
+            },
+            {
+              type: "string",
+              name: "text",
+              label: "Button text",
+              description: "Change the text on the button.",
+            },
+          ],
+        },
+        {
+          type: "object",
+          name: "insta",
+          label: "Instagram",
+          fields: [
+            {
+              type: "boolean",
+              name: "toggle",
+              label: "Show / hide",
+              description: "Show or hide the Instagram button.",
+            },
+            {
+              type: "string",
+              name: "link",
+              label: "Instagram link",
+              description: "Put the link to the Instagram page here.",
+            },
+          ],
+        },
+        {
+          type: "object",
+          name: "email",
+          label: "Email",
+          fields: [
+            {
+              type: "boolean",
+              name: "toggle",
+              label: "Show / hide",
+              description: "Show or hide the Email button.",
+            },
+            {
+              type: "string",
+              name: "email",
+              label: "Email address",
+              description: "Put the email address here.",
+            },
+          ],
+        },
+        {
+          type: "object",
+          name: "bottomText",
+          label: "Bottom text",
+          fields: [
+            {
+              type: "boolean",
+              name: "toggle",
+              label: "Show / hide",
+              description: "Show or hide the bottom text.",
+            },
+            {
+              type: "string",
+              name: "text",
+              label: "Text",
+              description: "Put the text you want to display here.",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: "object",
       name: "theme",
       label: "Theme",
       fields: [
@@ -346,6 +443,30 @@ const home = {
           name: "textColour",
           label: "Text Colour",
           description: "The text colour of the website.",
+          required: true,
+          ui: {
+            component: "color",
+            colorFormat: "hex",
+            widget: "sketch",
+          },
+        },
+        {
+          type: "string",
+          name: "buttonColour",
+          label: "Button Colour",
+          description: "The colour of buttons on the website.",
+          required: true,
+          ui: {
+            component: "color",
+            colorFormat: "hex",
+            widget: "sketch",
+          },
+        },
+        {
+          type: "string",
+          name: "buttonHoverColour",
+          label: "Button Hover Colour",
+          description: "The colour of buttons when hovering on the website.",
           required: true,
           ui: {
             component: "color",
